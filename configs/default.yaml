@@ -1,0 +1,60 @@
+# Default configuration for Electricity Demand Forecasting Service
+
+# Data settings
+data:
+  use_synthetic: true
+  synthetic_start: "2015-01-01"
+  synthetic_end: "2018-12-31"
+  pjm_series: "PJME"
+
+# Feature engineering
+features:
+  lag_hours: [1, 2, 3, 6, 12, 24, 48, 168]
+  rolling_windows: [6, 12, 24, 48, 168]
+  fourier_daily_terms: 3
+  fourier_weekly_terms: 2
+  fourier_annual_terms: 4
+  include_holidays: true
+  include_temperature: true
+
+# Model settings
+models:
+  quantiles: [0.1, 0.5, 0.9]
+  default_horizon: 24
+
+  lightgbm:
+    n_estimators: 500
+    learning_rate: 0.05
+    num_leaves: 63
+    feature_fraction: 0.8
+    bagging_fraction: 0.8
+
+  lstm:
+    sequence_length: 168
+    hidden_size: 64
+    num_layers: 2
+    dropout: 0.2
+    epochs: 50
+
+# Training
+training:
+  train_test_split: "2017-01-01"
+  n_cv_folds: 5
+  cv_test_size: 168
+  cv_gap: 24
+
+# API settings
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+
+# MLflow
+mlflow:
+  tracking_uri: "sqlite:///mlflow.db"
+  experiment_name: "electricity-demand-forecast"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "json"  # "json" or "console"

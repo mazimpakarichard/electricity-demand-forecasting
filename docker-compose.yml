@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  forecast-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: forecast-api
+    ports:
+      - "8000:8000"
+    environment:
+      - FORECAST_USE_SYNTHETIC_DATA=true
+      - FORECAST_LOG_LEVEL=INFO
+      - FORECAST_DEBUG=false
+      - FORECAST_MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./results:/app/results
+    depends_on:
+      - mlflow
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - forecast-network
+
+  mlflow:
+    image: python:3.11-slim
+    container_name: forecast-mlflow
+    command: >
+      bash -c "pip install mlflow>=2.10.0 &&
+               mlflow server
+               --host 0.0.0.0
+               --port 5000
+               --backend-store-uri sqlite:///mlflow/mlflow.db
+               --default-artifact-root /mlflow/artifacts"
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow-data:/mlflow
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - forecast-network
+
+  # Optional: Jupyter for development
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: forecast-jupyter
+    command: >
+      bash -c "pip install jupyterlab &&
+               jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"
+    ports:
+      - "8888:8888"
+    environment:
+      - FORECAST_USE_SYNTHETIC_DATA=true
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./src:/app/src
+    profiles:
+      - dev
+    networks:
+      - forecast-network
+
+volumes:
+  mlflow-data:
+    driver: local
+
+networks:
+  forecast-network:
+    driver: bridge
