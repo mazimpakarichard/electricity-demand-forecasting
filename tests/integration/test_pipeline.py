@@ -60,9 +60,7 @@ class TestEndToEndPipeline:
         X = features[feature_cols]
         y = features["load_mw"]
 
-        model = LightGBMForecaster(
-            params={"n_estimators": 50, "verbose": -1}
-        )
+        model = LightGBMForecaster(params={"n_estimators": 50, "verbose": -1})
         model.fit(X, y)
 
         assert model.is_fitted
@@ -76,9 +74,7 @@ class TestEndToEndPipeline:
         assert 0.5 in result.quantile_forecasts
         assert 0.9 in result.quantile_forecasts
 
-    def test_model_persistence(
-        self, setup_data: pd.DataFrame, tmp_path: Path
-    ) -> None:
+    def test_model_persistence(self, setup_data: pd.DataFrame, tmp_path: Path) -> None:
         """Test model save and load cycle."""
         engineer = FeatureEngineer()
         features = engineer.transform(setup_data, target_col="load_mw")
@@ -88,9 +84,7 @@ class TestEndToEndPipeline:
         y = features["load_mw"]
 
         # Train model
-        model = LightGBMForecaster(
-            params={"n_estimators": 20, "verbose": -1}
-        )
+        model = LightGBMForecaster(params={"n_estimators": 20, "verbose": -1})
         model.fit(X, y)
 
         # Save model

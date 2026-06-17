@@ -193,6 +193,7 @@ class BaseForecaster(ABC):
             CrossValidationResult with metrics for each fold.
         """
         from forecast_service.utils.logging import get_logger
+
         logger = get_logger(__name__)
 
         feature_cols = [c for c in df.columns if c != target_col]

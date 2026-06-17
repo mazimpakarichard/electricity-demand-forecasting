@@ -1,7 +1,6 @@
 """Pytest configuration and fixtures."""
 
 from pathlib import Path
-from typing import Generator
 
 import pandas as pd
 import pytest

@@ -29,13 +29,15 @@ class PredictRequest(BaseModel):
         description="Start time for forecast (defaults to current time)",
     )
 
-    model_config = {"json_schema_extra": {
-        "example": {
-            "horizon": 24,
-            "quantiles": [0.1, 0.5, 0.9],
-            "start_time": "2024-01-15T00:00:00",
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "horizon": 24,
+                "quantiles": [0.1, 0.5, 0.9],
+                "start_time": "2024-01-15T00:00:00",
+            }
         }
-    }}
+    }
 
 
 class ForecastPoint(BaseModel):
@@ -58,24 +60,26 @@ class PredictResponse(BaseModel):
     generated_at: datetime = Field(description="Timestamp when forecast was generated")
     data_source: str = Field(description="Data source (REAL or SYNTHETIC)")
 
-    model_config = {"json_schema_extra": {
-        "example": {
-            "model_name": "LightGBM",
-            "horizon": 24,
-            "quantiles": [0.1, 0.5, 0.9],
-            "forecasts": [
-                {
-                    "timestamp": "2024-01-15T00:00:00",
-                    "point_forecast": 32500.0,
-                    "p10": 30000.0,
-                    "p50": 32500.0,
-                    "p90": 35000.0,
-                }
-            ],
-            "generated_at": "2024-01-15T00:00:00",
-            "data_source": "SYNTHETIC",
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "model_name": "LightGBM",
+                "horizon": 24,
+                "quantiles": [0.1, 0.5, 0.9],
+                "forecasts": [
+                    {
+                        "timestamp": "2024-01-15T00:00:00",
+                        "point_forecast": 32500.0,
+                        "p10": 30000.0,
+                        "p50": 32500.0,
+                        "p90": 35000.0,
+                    }
+                ],
+                "generated_at": "2024-01-15T00:00:00",
+                "data_source": "SYNTHETIC",
+            }
         }
-    }}
+    }
 
 
 class ErrorResponse(BaseModel):

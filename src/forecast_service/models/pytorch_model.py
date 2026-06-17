@@ -66,9 +66,7 @@ class QuantileLoss(nn.Module):
         super().__init__()
         self.quantiles = quantiles
 
-    def forward(
-        self, predictions: torch.Tensor, targets: torch.Tensor
-    ) -> torch.Tensor:
+    def forward(self, predictions: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         losses = []
         for i, q in enumerate(self.quantiles):
             errors = targets - predictions[:, i]
@@ -139,9 +137,7 @@ class TCNBlock(nn.Module):
 
         # Residual connection
         self.downsample = (
-            nn.Conv1d(in_channels, out_channels, 1)
-            if in_channels != out_channels
-            else None
+            nn.Conv1d(in_channels, out_channels, 1) if in_channels != out_channels else None
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -261,13 +257,9 @@ class LSTMForecaster(BaseForecaster):
         val_size = max(168, int(len(dataset) * 0.1))
         train_size = len(dataset) - val_size
 
-        train_dataset, val_dataset = torch.utils.data.random_split(
-            dataset, [train_size, val_size]
-        )
+        train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
 
-        train_loader = DataLoader(
-            train_dataset, batch_size=self.config.batch_size, shuffle=True
-        )
+        train_loader = DataLoader(train_dataset, batch_size=self.config.batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=self.config.batch_size)
 
         # Initialize model
@@ -280,9 +272,7 @@ class LSTMForecaster(BaseForecaster):
         ).to(self.device)
 
         criterion = QuantileLoss(self.quantiles)
-        optimizer = torch.optim.Adam(
-            self.model.parameters(), lr=self.config.learning_rate
-        )
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.config.learning_rate)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer, mode="min", factor=0.5, patience=5
         )
@@ -324,9 +314,7 @@ class LSTMForecaster(BaseForecaster):
                     y_batch = y_batch.to(self.device)
 
                     output = self.model(X_batch)
-                    loss = criterion(
-                        output, y_batch.unsqueeze(1).expand(-1, n_quantiles)
-                    )
+                    loss = criterion(output, y_batch.unsqueeze(1).expand(-1, n_quantiles))
                     val_loss += loss.item()
 
             val_loss /= len(val_loader)
@@ -374,9 +362,7 @@ class LSTMForecaster(BaseForecaster):
                 if i < self.config.sequence_length:
                     # Pad with zeros if not enough history
                     pad_size = self.config.sequence_length - i
-                    X_seq = np.vstack(
-                        [np.zeros((pad_size, X_norm.shape[1])), X_norm[: i + 1]]
-                    )
+                    X_seq = np.vstack([np.zeros((pad_size, X_norm.shape[1])), X_norm[: i + 1]])
                 else:
                     X_seq = X_norm[start_idx : i + 1]
 
@@ -393,9 +379,7 @@ class LSTMForecaster(BaseForecaster):
         for i, q in enumerate(self.quantiles):
             quantile_forecasts[q] = predictions[:, i]
 
-        point_forecast = quantile_forecasts.get(
-            0.5, np.median(predictions, axis=1)
-        )
+        point_forecast = quantile_forecasts.get(0.5, np.median(predictions, axis=1))
 
         return ForecastResult(
             timestamps=pd.DatetimeIndex(timestamps),
@@ -505,13 +489,9 @@ class TCNForecaster(BaseForecaster):
         val_size = max(168, int(len(dataset) * 0.1))
         train_size = len(dataset) - val_size
 
-        train_dataset, val_dataset = torch.utils.data.random_split(
-            dataset, [train_size, val_size]
-        )
+        train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
 
-        train_loader = DataLoader(
-            train_dataset, batch_size=self.config.batch_size, shuffle=True
-        )
+        train_loader = DataLoader(train_dataset, batch_size=self.config.batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=self.config.batch_size)
 
         # Initialize model
@@ -524,9 +504,7 @@ class TCNForecaster(BaseForecaster):
         ).to(self.device)
 
         criterion = QuantileLoss(self.quantiles)
-        optimizer = torch.optim.Adam(
-            self.model.parameters(), lr=self.config.learning_rate
-        )
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.config.learning_rate)
 
         logger.info(
             "Training TCN model",
@@ -564,9 +542,7 @@ class TCNForecaster(BaseForecaster):
                     y_batch = y_batch.to(self.device)
 
                     output = self.model(X_batch)
-                    loss = criterion(
-                        output, y_batch.unsqueeze(1).expand(-1, n_quantiles)
-                    )
+                    loss = criterion(output, y_batch.unsqueeze(1).expand(-1, n_quantiles))
                     val_loss += loss.item()
 
             val_loss /= len(val_loader)
@@ -609,9 +585,7 @@ class TCNForecaster(BaseForecaster):
             for i in range(horizon):
                 if i < self.config.sequence_length:
                     pad_size = self.config.sequence_length - i
-                    X_seq = np.vstack(
-                        [np.zeros((pad_size, X_norm.shape[1])), X_norm[: i + 1]]
-                    )
+                    X_seq = np.vstack([np.zeros((pad_size, X_norm.shape[1])), X_norm[: i + 1]])
                 else:
                     start_idx = i - self.config.sequence_length
                     X_seq = X_norm[start_idx : i + 1]

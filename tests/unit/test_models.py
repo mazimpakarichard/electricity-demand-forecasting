@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 
 from forecast_service.models.base import CrossValidationResult, ForecastResult
-from forecast_service.models.baselines import SARIMAForecaster, SeasonalNaive
+from forecast_service.models.baselines import SeasonalNaive
 from forecast_service.models.lightgbm_model import LightGBMForecaster
 from forecast_service.utils.metrics import ForecastMetrics
 
@@ -127,9 +127,7 @@ class TestSeasonalNaive:
         assert 0.5 in result.quantile_forecasts
         assert 0.9 in result.quantile_forecasts
 
-    def test_save_load(
-        self, engineered_features: pd.DataFrame, tmp_path: Path
-    ) -> None:
+    def test_save_load(self, engineered_features: pd.DataFrame, tmp_path: Path) -> None:
         """Test model save and load."""
         model = SeasonalNaive()
         feature_cols = [c for c in engineered_features.columns if c != "load_mw"]
@@ -201,9 +199,7 @@ class TestLightGBMForecaster:
         assert isinstance(result, ForecastResult)
         assert len(result.point_forecast) == 24
 
-    def test_get_feature_importance(
-        self, engineered_features: pd.DataFrame
-    ) -> None:
+    def test_get_feature_importance(self, engineered_features: pd.DataFrame) -> None:
         """Test feature importance retrieval."""
         model = LightGBMForecaster(params={"n_estimators": 10, "verbose": -1})
         feature_cols = [c for c in engineered_features.columns if c != "load_mw"]
@@ -219,9 +215,7 @@ class TestLightGBMForecaster:
         assert "importance" in importance.columns
         assert len(importance) == len(feature_cols)
 
-    def test_save_load(
-        self, engineered_features: pd.DataFrame, tmp_path: Path
-    ) -> None:
+    def test_save_load(self, engineered_features: pd.DataFrame, tmp_path: Path) -> None:
         """Test model save and load."""
         model = LightGBMForecaster(params={"n_estimators": 10, "verbose": -1})
         feature_cols = [c for c in engineered_features.columns if c != "load_mw"]
@@ -248,6 +242,4 @@ class TestLightGBMForecaster:
         result1 = model.predict(X.tail(24), horizon=24)
         result2 = loaded_model.predict(X.tail(24), horizon=24)
 
-        np.testing.assert_array_almost_equal(
-            result1.point_forecast, result2.point_forecast
-        )
+        np.testing.assert_array_almost_equal(result1.point_forecast, result2.point_forecast)

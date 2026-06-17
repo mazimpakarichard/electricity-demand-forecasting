@@ -62,9 +62,7 @@ class TestFeatureEngineer:
         assert len(engineer.feature_names_) > 0
         assert len(features) > 0
 
-    def test_transform_creates_lag_features(
-        self, small_synthetic_data: pd.DataFrame
-    ) -> None:
+    def test_transform_creates_lag_features(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that lag features are created."""
         config = FeatureConfig(lag_hours=[1, 24])
         engineer = FeatureEngineer(config=config)
@@ -73,9 +71,7 @@ class TestFeatureEngineer:
         assert "lag_1h" in features.columns
         assert "lag_24h" in features.columns
 
-    def test_transform_creates_rolling_features(
-        self, small_synthetic_data: pd.DataFrame
-    ) -> None:
+    def test_transform_creates_rolling_features(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that rolling features are created."""
         config = FeatureConfig(rolling_windows=[24])
         engineer = FeatureEngineer(config=config)
@@ -86,9 +82,7 @@ class TestFeatureEngineer:
         assert "rolling_min_24h" in features.columns
         assert "rolling_max_24h" in features.columns
 
-    def test_transform_creates_calendar_features(
-        self, small_synthetic_data: pd.DataFrame
-    ) -> None:
+    def test_transform_creates_calendar_features(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that calendar features are created."""
         engineer = FeatureEngineer()
         features = engineer.transform(small_synthetic_data, target_col="load_mw")
@@ -98,9 +92,7 @@ class TestFeatureEngineer:
         assert "month" in features.columns
         assert "is_weekend" in features.columns
 
-    def test_transform_creates_fourier_features(
-        self, small_synthetic_data: pd.DataFrame
-    ) -> None:
+    def test_transform_creates_fourier_features(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that Fourier features are created."""
         engineer = FeatureEngineer()
         features = engineer.transform(small_synthetic_data, target_col="load_mw")
@@ -110,9 +102,7 @@ class TestFeatureEngineer:
         assert "weekly_sin_1" in features.columns
         assert "annual_sin_1" in features.columns
 
-    def test_transform_creates_holiday_features(
-        self, small_synthetic_data: pd.DataFrame
-    ) -> None:
+    def test_transform_creates_holiday_features(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that holiday features are created."""
         config = FeatureConfig(include_holidays=True)
         engineer = FeatureEngineer(config=config)
@@ -134,18 +124,14 @@ class TestFeatureEngineer:
     def test_transform_drops_na(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that NaN values are dropped."""
         engineer = FeatureEngineer()
-        features = engineer.transform(
-            small_synthetic_data, target_col="load_mw", drop_na=True
-        )
+        features = engineer.transform(small_synthetic_data, target_col="load_mw", drop_na=True)
 
         assert features.isna().sum().sum() == 0
 
     def test_transform_keeps_na(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test that NaN values can be kept."""
         engineer = FeatureEngineer()
-        features = engineer.transform(
-            small_synthetic_data, target_col="load_mw", drop_na=False
-        )
+        features = engineer.transform(small_synthetic_data, target_col="load_mw", drop_na=False)
 
         # Should have NaN from lagging
         assert features.isna().sum().sum() > 0
@@ -158,9 +144,7 @@ class TestFeatureEngineer:
         with pytest.raises(ValueError, match="DatetimeIndex"):
             engineer.transform(df, target_col="load_mw")
 
-    def test_transform_missing_target(
-        self, small_synthetic_data: pd.DataFrame
-    ) -> None:
+    def test_transform_missing_target(self, small_synthetic_data: pd.DataFrame) -> None:
         """Test error on missing target column."""
         engineer = FeatureEngineer()
 

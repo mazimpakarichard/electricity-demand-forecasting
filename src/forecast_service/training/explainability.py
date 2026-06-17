@@ -8,7 +8,8 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend
+
+matplotlib.use("Agg")  # Non-interactive backend
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -57,9 +58,7 @@ class SHAPExplainer:
         # Sample background data if needed
         if X_background is not None:
             if len(X_background) > max_background_samples:
-                X_background = X_background.sample(
-                    n=max_background_samples, random_state=42
-                )
+                X_background = X_background.sample(n=max_background_samples, random_state=42)
             self._background = X_background
         else:
             self._background = None
@@ -213,12 +212,14 @@ class SHAPExplainer:
         # Mean absolute SHAP value per feature
         importance = np.abs(shap_values.values).mean(axis=0)
 
-        df = pd.DataFrame({
-            "feature": self.feature_names,
-            "importance": importance,
-            "mean_shap": shap_values.values.mean(axis=0),
-            "std_shap": shap_values.values.std(axis=0),
-        })
+        df = pd.DataFrame(
+            {
+                "feature": self.feature_names,
+                "importance": importance,
+                "mean_shap": shap_values.values.mean(axis=0),
+                "std_shap": shap_values.values.std(axis=0),
+            }
+        )
 
         return df.sort_values("importance", ascending=False).reset_index(drop=True)
 
@@ -314,9 +315,7 @@ importance. The model successfully captures:
 ### 3. Weather Sensitivity
 
 """
-        weather_features = importance[
-            importance["feature"].str.contains("temp|degree")
-        ]
+        weather_features = importance[importance["feature"].str.contains("temp|degree")]
         if len(weather_features) > 0:
             weather_importance = weather_features["importance"].sum()
             weather_pct = (weather_importance / total_importance) * 100

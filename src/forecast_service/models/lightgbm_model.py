@@ -159,8 +159,7 @@ class LightGBMForecaster(BaseForecaster):
 
         # Point forecast is the median (p50)
         point_forecast = quantile_forecasts.get(
-            0.5,
-            np.median(list(quantile_forecasts.values()), axis=0)
+            0.5, np.median(list(quantile_forecasts.values()), axis=0)
         )
 
         return ForecastResult(
@@ -193,10 +192,12 @@ class LightGBMForecaster(BaseForecaster):
 
         importance = model.feature_importances_
 
-        df = pd.DataFrame({
-            "feature": self.feature_names,
-            "importance": importance,
-        })
+        df = pd.DataFrame(
+            {
+                "feature": self.feature_names,
+                "importance": importance,
+            }
+        )
 
         return df.sort_values("importance", ascending=False).reset_index(drop=True)
 

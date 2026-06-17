@@ -13,7 +13,6 @@ See FEATURES.md for detailed documentation of all features.
 """
 
 from dataclasses import dataclass, field
-from typing import Any
 
 import holidays
 import numpy as np
@@ -216,7 +215,6 @@ class FeatureEngineer:
     def _add_fourier_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """Add Fourier features for cyclic patterns."""
         idx = df.index
-        n = len(df)
 
         # Daily cycle (24-hour period)
         hour_fraction = idx.hour / 24
@@ -257,9 +255,7 @@ class FeatureEngineer:
 
         return df
 
-    def _add_temperature_features(
-        self, df: pd.DataFrame, temperature: pd.Series
-    ) -> pd.DataFrame:
+    def _add_temperature_features(self, df: pd.DataFrame, temperature: pd.Series) -> pd.DataFrame:
         """Add temperature-based features."""
         df["temperature"] = temperature.values
 
@@ -268,12 +264,8 @@ class FeatureEngineer:
         df["temp_lag_24h"] = temperature.shift(24).values
 
         # Rolling temperature stats
-        df["temp_rolling_mean_24h"] = (
-            temperature.rolling(window=24, min_periods=1).mean().values
-        )
-        df["temp_rolling_std_24h"] = (
-            temperature.rolling(window=24, min_periods=1).std().values
-        )
+        df["temp_rolling_mean_24h"] = temperature.rolling(window=24, min_periods=1).mean().values
+        df["temp_rolling_std_24h"] = temperature.rolling(window=24, min_periods=1).std().values
 
         # Heating and cooling degree features
         # Reference temperature for HVAC load
@@ -307,9 +299,22 @@ class FeatureEngineer:
                 groups["lag"].append(name)
             elif name.startswith("rolling_"):
                 groups["rolling"].append(name)
-            elif name in ("hour", "day_of_week", "day_of_month", "month", "quarter", "year", "is_weekend"):
+            elif name in (
+                "hour",
+                "day_of_week",
+                "day_of_month",
+                "month",
+                "quarter",
+                "year",
+                "is_weekend",
+            ):
                 groups["calendar"].append(name)
-            elif name.endswith("_sin_") or name.endswith("_cos_") or "_sin_" in name or "_cos_" in name:
+            elif (
+                name.endswith("_sin_")
+                or name.endswith("_cos_")
+                or "_sin_" in name
+                or "_cos_" in name
+            ):
                 groups["fourier"].append(name)
             elif "holiday" in name:
                 groups["holiday"].append(name)

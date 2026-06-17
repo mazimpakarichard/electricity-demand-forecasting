@@ -1,12 +1,12 @@
 """Tests for FastAPI endpoints."""
 
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 
-from forecast_service.api.app import ForecastService, app, get_service
+from forecast_service.api.app import ForecastService, app
 from forecast_service.api.schemas import PredictRequest
 
 

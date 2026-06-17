@@ -12,12 +12,12 @@ from forecast_service.models.base import BaseForecaster, CrossValidationResult
 from forecast_service.models.baselines import SARIMAForecaster, SeasonalNaive
 from forecast_service.models.lightgbm_model import LightGBMForecaster
 from forecast_service.training.experiment import ExperimentTracker
-from forecast_service.utils.config import Settings
 from forecast_service.utils.logging import get_logger
 
 # Optional PyTorch imports
 try:
     from forecast_service.models.pytorch_model import LSTMForecaster, SequenceConfig, TCNForecaster
+
     PYTORCH_AVAILABLE = True
 except ImportError:
     PYTORCH_AVAILABLE = False
@@ -27,7 +27,9 @@ except ImportError:
     @dataclass
     class SequenceConfig:  # type: ignore[no-redef]
         """Placeholder config when PyTorch not available."""
+
         epochs: int = 30
+
 
 logger = get_logger(__name__)
 
@@ -133,10 +135,7 @@ class TrainingPipeline:
         return {
             "comparison": comparison,
             "best_model": self.best_model.name if self.best_model else None,
-            "results": {
-                name: result.mean_metrics
-                for name, result in self.results.items()
-            },
+            "results": {name: result.mean_metrics for name, result in self.results.items()},
         }
 
     def _load_data(self) -> None:
@@ -268,11 +267,13 @@ class TrainingPipeline:
                 )
 
                 self.tracker.log_cv_results(cv_result, name)
-                self.tracker.log_params({
-                    "quantiles": self.config.quantiles,
-                    "n_features": len(feature_cols),
-                    "train_size": len(train_data),
-                })
+                self.tracker.log_params(
+                    {
+                        "quantiles": self.config.quantiles,
+                        "n_features": len(feature_cols),
+                        "train_size": len(train_data),
+                    }
+                )
 
                 # Save model
                 model_path = self.config.models_dir / f"{name.lower()}.pkl"

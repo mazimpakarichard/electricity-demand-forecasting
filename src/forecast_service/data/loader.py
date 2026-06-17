@@ -3,7 +3,6 @@
 from pathlib import Path
 from typing import Literal
 
-import numpy as np
 import pandas as pd
 
 from forecast_service.utils.logging import get_logger
@@ -11,7 +10,9 @@ from forecast_service.utils.logging import get_logger
 logger = get_logger(__name__)
 
 # PJM data series available on Kaggle and public sources
-PJM_SERIES = Literal["AEP", "COMED", "DAYTON", "DEOK", "DOM", "DUQ", "EKPC", "FE", "NI", "PJME", "PJMW"]
+PJM_SERIES = Literal[
+    "AEP", "COMED", "DAYTON", "DEOK", "DOM", "DUQ", "EKPC", "FE", "NI", "PJME", "PJMW"
+]
 
 
 class DataLoader:
@@ -112,7 +113,9 @@ class DataLoader:
             raise ValueError(f"No datetime column found. Columns: {list(df.columns)}")
 
         # Find value column
-        value_col = self._find_column(df, [self.series, "mw", "load", "demand", "value", "megawatts"])
+        value_col = self._find_column(
+            df, [self.series, "mw", "load", "demand", "value", "megawatts"]
+        )
         if value_col is None:
             raise ValueError(f"No value column found. Columns: {list(df.columns)}")
 
@@ -120,9 +123,10 @@ class DataLoader:
         df[datetime_col] = pd.to_datetime(df[datetime_col])
 
         # Create clean dataframe
-        result = pd.DataFrame({
-            "load_mw": df[value_col].astype(float)
-        }, index=pd.DatetimeIndex(df[datetime_col], name="datetime"))
+        result = pd.DataFrame(
+            {"load_mw": df[value_col].astype(float)},
+            index=pd.DatetimeIndex(df[datetime_col], name="datetime"),
+        )
 
         # Sort by datetime
         result = result.sort_index()

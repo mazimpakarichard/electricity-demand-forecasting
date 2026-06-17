@@ -209,14 +209,10 @@ class SyntheticDataGenerator:
         weekend_effect = np.where(day_of_week >= 5, -3000, 0)
 
         # Friday afternoon slightly lower
-        friday_effect = np.where(
-            (day_of_week == 4) & (index.hour.values >= 15), -500, 0
-        )
+        friday_effect = np.where((day_of_week == 4) & (index.hour.values >= 15), -500, 0)
 
         # Monday morning ramp-up (slightly lower early Monday)
-        monday_effect = np.where(
-            (day_of_week == 0) & (index.hour.values < 10), -800, 0
-        )
+        monday_effect = np.where((day_of_week == 0) & (index.hour.values < 10), -800, 0)
 
         return weekend_effect + friday_effect + monday_effect
 
@@ -297,18 +293,10 @@ class SyntheticDataGenerator:
         optimal_temp = 65
 
         # Heating effect (cold weather)
-        heating = np.where(
-            temperature < optimal_temp,
-            100 * (optimal_temp - temperature),
-            0
-        )
+        heating = np.where(temperature < optimal_temp, 100 * (optimal_temp - temperature), 0)
 
         # Cooling effect (hot weather, stronger than heating)
-        cooling = np.where(
-            temperature > optimal_temp,
-            150 * (temperature - optimal_temp),
-            0
-        )
+        cooling = np.where(temperature > optimal_temp, 150 * (temperature - optimal_temp), 0)
 
         return heating + cooling
 

@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, Generator
 
 import mlflow
-from mlflow.models.signature import infer_signature
 
 from forecast_service.models.base import BaseForecaster, ForecastMetrics
 from forecast_service.utils.logging import get_logger
@@ -121,6 +120,7 @@ class ExperimentTracker:
         """
         # Save model to temporary file
         import tempfile
+
         with tempfile.TemporaryDirectory() as tmpdir:
             model_path = Path(tmpdir) / "model.pkl"
             model.save(model_path)
@@ -175,6 +175,7 @@ class ExperimentTracker:
 
         # Save detailed results as artifact
         import tempfile
+
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             cv_results.to_dataframe().to_csv(f.name, index=False)
             mlflow.log_artifact(f.name, "cv_results")
@@ -212,9 +213,7 @@ class ExperimentTracker:
                 if k.startswith("metrics.")
             },
             "params": {
-                k.replace("params.", ""): v
-                for k, v in best_run.items()
-                if k.startswith("params.")
+                k.replace("params.", ""): v for k, v in best_run.items() if k.startswith("params.")
             },
         }
 
@@ -229,10 +228,12 @@ class ExperimentTracker:
         Returns:
             Local path to downloaded artifacts.
         """
-        return Path(mlflow.artifacts.download_artifacts(
-            run_id=run_id,
-            artifact_path=artifact_path,
-        ))
+        return Path(
+            mlflow.artifacts.download_artifacts(
+                run_id=run_id,
+                artifact_path=artifact_path,
+            )
+        )
 
     @staticmethod
     def _flatten_dict(d: dict[str, Any], parent_key: str = "") -> dict[str, Any]:

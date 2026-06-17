@@ -137,9 +137,7 @@ def calculate_metrics(
     )
 
 
-def coverage(
-    y_true: ArrayLike, lower: ArrayLike, upper: ArrayLike
-) -> float:
+def coverage(y_true: ArrayLike, lower: ArrayLike, upper: ArrayLike) -> float:
     """
     Calculate prediction interval coverage.
 

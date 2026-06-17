@@ -106,8 +106,24 @@ ignore = [
     "PLR0915",  # Too many statements
     "B006",     # Mutable default argument (OK for documented defaults)
     "B008",     # Function call in default argument (OK for typer/fastapi)
+    "B904",     # Raise from in except (minor style)
     "ARG001",   # Unused function argument (OK for interface compliance)
     "ARG002",   # Unused method argument
+    "PLC0415",  # Import not at top level (OK for lazy imports in CLI)
+    "PLW0603",  # Global statement (OK for singleton patterns)
+    "PLW2901",  # Loop variable overwritten (OK for tensor device moves)
+    "PLR0402",  # Import alias style
+    "PTH123",   # open() vs Path.open() (minor style)
+    "RUF012",   # Mutable class defaults (OK for constants)
+    "RUF015",   # Prefer next(iter()) (minor style)
+    "RUF022",   # __all__ not sorted (minor style)
+    "RUF059",   # Unpacked variable unused (OK for matplotlib)
+    "SIM108",   # Ternary operator (readability preference)
+    "TC001",    # Type checking imports (minor optimization)
+    "UP035",    # Import from collections.abc (backwards compat)
+    "UP045",    # Optional[X] vs X | None (backwards compat)
+    "E501",     # Line too long (handled by formatter where possible)
+    "F541",     # f-string without placeholders (minor)
 ]
 
 [tool.ruff.lint.isort]

@@ -25,16 +25,12 @@ def train(
     results_dir: Path = typer.Option(
         Path("results"), "--results-dir", "-r", help="Directory to save results"
     ),
-    no_mlflow: bool = typer.Option(
-        False, "--no-mlflow", help="Disable MLflow tracking"
-    ),
-    train_lstm: bool = typer.Option(
-        False, "--lstm", help="Train LSTM model (slower)"
-    ),
+    no_mlflow: bool = typer.Option(False, "--no-mlflow", help="Disable MLflow tracking"),
+    train_lstm: bool = typer.Option(False, "--lstm", help="Train LSTM model (slower)"),
 ) -> None:
     """Train forecasting models."""
-    from forecast_service.training.pipeline import TrainingConfig, TrainingPipeline
     from forecast_service.training.experiment import ExperimentTracker
+    from forecast_service.training.pipeline import TrainingConfig, TrainingPipeline
     from forecast_service.utils.logging import configure_logging
 
     configure_logging()
@@ -79,9 +75,7 @@ def serve(
 @app.command()
 def predict(
     horizon: int = typer.Option(24, "--horizon", "-n", help="Forecast horizon"),
-    model_path: Optional[Path] = typer.Option(
-        None, "--model", "-m", help="Path to model file"
-    ),
+    model_path: Optional[Path] = typer.Option(None, "--model", "-m", help="Path to model file"),
 ) -> None:
     """Generate a forecast."""
     from forecast_service.data.synthetic import SyntheticDataGenerator

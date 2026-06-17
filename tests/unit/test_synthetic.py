@@ -1,7 +1,6 @@
 """Tests for synthetic data generation."""
 
 import pandas as pd
-import pytest
 
 from forecast_service.data.synthetic import (
     SyntheticDataGenerator,
