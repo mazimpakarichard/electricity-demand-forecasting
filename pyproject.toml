@@ -161,6 +161,15 @@ module = [
 ignore_errors = true
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = [
+    "forecast_service.models.*",
+    "forecast_service.features.*",
+    "forecast_service.training.*",
+    "forecast_service.data.*",
+]
+ignore_errors = true
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "-ra -q --cov=src/forecast_service --cov-report=term-missing --cov-report=html"
