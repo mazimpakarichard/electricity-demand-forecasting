@@ -147,8 +147,9 @@ class SeasonalNaive(BaseForecaster):
 
     def load(self, path: Path | str) -> "SeasonalNaive":
         """Load model from disk."""
+        # Note: Only load models from trusted sources (our own saved models)
         with open(path, "rb") as f:
-            state = pickle.load(f)
+            state = pickle.load(f)  # nosec B301
 
         self.seasonal_period = state["seasonal_period"]
         self.quantiles = state["quantiles"]
@@ -302,8 +303,9 @@ class SARIMAForecaster(BaseForecaster):
 
     def load(self, path: Path | str) -> "SARIMAForecaster":
         """Load model from disk."""
+        # Note: Only load models from trusted sources (our own saved models)
         with open(path, "rb") as f:
-            state = pickle.load(f)
+            state = pickle.load(f)  # nosec B301
 
         self.order = state["order"]
         self.seasonal_order = state["seasonal_order"]

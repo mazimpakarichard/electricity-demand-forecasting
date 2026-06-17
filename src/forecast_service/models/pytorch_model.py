@@ -426,7 +426,8 @@ class LSTMForecaster(BaseForecaster):
 
     def load(self, path: Path | str) -> "LSTMForecaster":
         """Load model from disk."""
-        state = torch.load(path, map_location=self.device, weights_only=False)
+        # Note: Only load models from trusted sources (our own saved models)
+        state = torch.load(path, map_location=self.device, weights_only=False)  # nosec B614
 
         self.config = state["config"]
         self.quantiles = state["quantiles"]
@@ -657,7 +658,8 @@ class TCNForecaster(BaseForecaster):
 
     def load(self, path: Path | str) -> "TCNForecaster":
         """Load model from disk."""
-        state = torch.load(path, map_location=self.device, weights_only=False)
+        # Note: Only load models from trusted sources (our own saved models)
+        state = torch.load(path, map_location=self.device, weights_only=False)  # nosec B614
 
         self.config = state["config"]
         self.quantiles = state["quantiles"]

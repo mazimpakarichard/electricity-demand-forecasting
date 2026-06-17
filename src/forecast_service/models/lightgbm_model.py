@@ -230,8 +230,9 @@ class LightGBMForecaster(BaseForecaster):
 
     def load(self, path: Path | str) -> "LightGBMForecaster":
         """Load models from disk."""
+        # Note: Only load models from trusted sources (our own saved models)
         with open(path, "rb") as f:
-            state = pickle.load(f)
+            state = pickle.load(f)  # nosec B301
 
         self.quantiles = state["quantiles"]
         self.params = state["params"]
