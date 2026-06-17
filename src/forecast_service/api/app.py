@@ -114,15 +114,21 @@ class ForecastService:
             point = ForecastPoint(
                 timestamp=result.timestamps[i].to_pydatetime(),
                 point_forecast=float(result.point_forecast[i]),
-                p10=float(result.quantile_forecasts.get(0.1, [0])[i])
-                if 0.1 in result.quantile_forecasts
-                else None,
-                p50=float(result.quantile_forecasts.get(0.5, [0])[i])
-                if 0.5 in result.quantile_forecasts
-                else None,
-                p90=float(result.quantile_forecasts.get(0.9, [0])[i])
-                if 0.9 in result.quantile_forecasts
-                else None,
+                p10=(
+                    float(result.quantile_forecasts.get(0.1, [0])[i])
+                    if 0.1 in result.quantile_forecasts
+                    else None
+                ),
+                p50=(
+                    float(result.quantile_forecasts.get(0.5, [0])[i])
+                    if 0.5 in result.quantile_forecasts
+                    else None
+                ),
+                p90=(
+                    float(result.quantile_forecasts.get(0.9, [0])[i])
+                    if 0.9 in result.quantile_forecasts
+                    else None
+                ),
             )
             forecasts.append(point)
 
